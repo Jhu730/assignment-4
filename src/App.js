@@ -6,6 +6,7 @@ It contains the top-level state.
 ==================================================*/
 import React, {Component} from 'react';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
+import axios from 'axios';
 
 // Import other components
 import Home from './components/Home';
@@ -18,14 +19,64 @@ class App extends Component {
   constructor() {  // Create and initialize state
     super(); 
     this.state = {
-      accountBalance: 1234567.89,
+      accountBalance: 0,
       creditList: [],
       debitList: [],
       currentUser: {
         userName: 'Joe Smith',
         memberSince: '11/22/99',
-      }
+      },
+      debitSum: 0,
+      creditSum: 0,
     };
+  }
+  async apiCallDebit(){
+    let apiLink = 'https://johnnylaicode.github.io/api/debits.json';
+    try{
+      let response = await axios.get(apiLink);
+      //console.log(response.data);
+      const data = response.data.map((item) => item.amount);
+      const sum = data.reduce((acc, amount) => acc + amount, 0);
+      this.setState({
+        debitList: response.data,
+        debitSum: sum,
+        accountBalance: this.state.accountBalance - sum,
+      });
+    } catch(error){
+      if (error.response) {
+        //console.log(error.response.data);
+        //console.log(error.response.status);
+      }    
+    }
+  }
+
+  async apiCallCredit(){
+    let apiLink = 'https://johnnylaicode.github.io/api/credits.json';
+    try{
+      let response = await axios.get(apiLink);
+      //console.log(response.data);
+      const data = response.data.map((item) => item.amount);
+      const sum = data.reduce((acc, amount) => acc + amount, 0);
+      this.setState({
+        creditList: response.data,
+        creditSum: sum,
+        accountBalance: this.state.accountBalance + sum,
+      });
+    } catch(error){
+      if (error.response) {
+        //console.log(error.response.data);
+        //console.log(error.response.status);
+      }    
+    }
+  }
+
+  componentDidMount(){
+    this.apiCallDebit();
+    this.apiCallCredit();
+  }
+
+  updateAccountBalance = (newBalance) => {
+    this.setState({accountBalance: newBalance})
   }
 
   // Update state's currentUser (userName) after "Log In" button is clicked
@@ -33,6 +84,10 @@ class App extends Component {
     const newUser = {...this.state.currentUser};
     newUser.userName = logInInfo.userName;
     this.setState({currentUser: newUser})
+  }
+
+  addDebit = (debit) => {
+    this.setState({debitList: debit})
   }
 
   // Create Routes and React elements to be rendered using React components
@@ -44,7 +99,7 @@ class App extends Component {
     )
     const LogInComponent = () => (<LogIn user={this.state.currentUser} mockLogIn={this.mockLogIn} />)
     const CreditsComponent = () => (<Credits credits={this.state.creditList} />) 
-    const DebitsComponent = () => (<Debits debits={this.state.debitList} />) 
+    const DebitsComponent = () => (<Debits debits={this.state.debitList} accountBalance={this.state.accountBalance} updateAccountBalance={this.updateAccountBalance} addDebit={this.addDebit}/>) 
 
     // Important: Include the "basename" in Router, which is needed for deploying the React app to GitHub Pages
     return (
