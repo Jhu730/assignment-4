@@ -4,14 +4,12 @@ src/components/Credits.js
 The Credits component contains information for Credits page view.
 Note: You need to work on this file for the Assignment.
 ==================================================*/
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import AccountBalance from "./AccountBalance";
 
 const Credits = (props) => {
-  // Create the list of Debit items
   let creditView = (credits) => {
     return credits.map((credit) => {
-      // Extract "id", "amount", "description" and "date" properties of each debits JSON array element
       let date = credit.date.slice(0, 10);
       return (
         <li key={credit.id}>
@@ -48,7 +46,7 @@ const Credits = (props) => {
       },
     ]);
   }
-  // Render the list of Debit items and a form to input new Debit item
+
   return (
     <div>
       <h1>Credit</h1>
