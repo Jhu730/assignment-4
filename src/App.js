@@ -4,35 +4,36 @@ src/App.js
 This is the top-level component of the app.
 It contains the top-level state.
 ==================================================*/
-import React, {Component} from 'react';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
-import axios from 'axios';
+import React, { Component } from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import axios from "axios";
 
 // Import other components
-import Home from './components/Home';
-import UserProfile from './components/UserProfile';
-import LogIn from './components/Login';
-import Credits from './components/Credits';
-import Debits from './components/Debits';
+import Home from "./components/Home";
+import UserProfile from "./components/UserProfile";
+import LogIn from "./components/Login";
+import Credits from "./components/Credits";
+import Debits from "./components/Debits";
 
 class App extends Component {
-  constructor() {  // Create and initialize state
-    super(); 
+  constructor() {
+    // Create and initialize state
+    super();
     this.state = {
       accountBalance: 0,
       creditList: [],
       debitList: [],
       currentUser: {
-        userName: 'Joe Smith',
-        memberSince: '11/22/99',
+        userName: "Joe Smith",
+        memberSince: "11/22/99",
       },
       debitSum: 0,
       creditSum: 0,
     };
   }
-  async apiCallDebit(){
-    let apiLink = 'https://johnnylaicode.github.io/api/debits.json';
-    try{
+  async apiCallDebit() {
+    let apiLink = "https://johnnylaicode.github.io/api/debits.json";
+    try {
       let response = await axios.get(apiLink);
       //console.log(response.data);
       const data = response.data.map((item) => item.amount);
@@ -42,17 +43,17 @@ class App extends Component {
         debitSum: sum,
         accountBalance: this.state.accountBalance - sum,
       });
-    } catch(error){
+    } catch (error) {
       if (error.response) {
         //console.log(error.response.data);
         //console.log(error.response.status);
-      }    
+      }
     }
   }
 
-  async apiCallCredit(){
-    let apiLink = 'https://johnnylaicode.github.io/api/credits.json';
-    try{
+  async apiCallCredit() {
+    let apiLink = "https://johnnylaicode.github.io/api/credits.json";
+    try {
       let response = await axios.get(apiLink);
       //console.log(response.data);
       const data = response.data.map((item) => item.amount);
@@ -62,54 +63,78 @@ class App extends Component {
         creditSum: sum,
         accountBalance: this.state.accountBalance + sum,
       });
-    } catch(error){
+    } catch (error) {
       if (error.response) {
         //console.log(error.response.data);
         //console.log(error.response.status);
-      }    
+      }
     }
   }
 
-  componentDidMount(){
-    this.apiCallDebit();
+  componentDidMount() {
     this.apiCallCredit();
+    this.apiCallDebit();
   }
 
   updateAccountBalance = (newBalance) => {
-    this.setState({accountBalance: newBalance})
-  }
+    this.setState({ accountBalance: newBalance });
+  };
 
   // Update state's currentUser (userName) after "Log In" button is clicked
-  mockLogIn = (logInInfo) => {  
-    const newUser = {...this.state.currentUser};
+  mockLogIn = (logInInfo) => {
+    const newUser = { ...this.state.currentUser };
     newUser.userName = logInInfo.userName;
-    this.setState({currentUser: newUser})
-  }
+    this.setState({ currentUser: newUser });
+  };
 
   addDebit = (debit) => {
-    this.setState({debitList: debit})
-  }
+    this.setState({ debitList: debit });
+  };
+  addCredit = (credit) => {
+    this.setState({ creditList: credit });
+  };
 
   // Create Routes and React elements to be rendered using React components
-  render() {  
+  render() {
     // Create React elements and pass input props to components
-    const HomeComponent = () => (<Home accountBalance={this.state.accountBalance} />)
+    const HomeComponent = () => (
+      <Home accountBalance={this.state.accountBalance} />
+    );
     const UserProfileComponent = () => (
-      <UserProfile userName={this.state.currentUser.userName} memberSince={this.state.currentUser.memberSince} />
-    )
-    const LogInComponent = () => (<LogIn user={this.state.currentUser} mockLogIn={this.mockLogIn} />)
-    const CreditsComponent = () => (<Credits credits={this.state.creditList} />) 
-    const DebitsComponent = () => (<Debits debits={this.state.debitList} accountBalance={this.state.accountBalance} updateAccountBalance={this.updateAccountBalance} addDebit={this.addDebit}/>) 
+      <UserProfile
+        userName={this.state.currentUser.userName}
+        memberSince={this.state.currentUser.memberSince}
+      />
+    );
+    const LogInComponent = () => (
+      <LogIn user={this.state.currentUser} mockLogIn={this.mockLogIn} />
+    );
+    const CreditsComponent = () => (
+      <Credits
+        credits={this.state.creditList}
+        accountBalance={this.state.accountBalance}
+        updateAccountBalance={this.updateAccountBalance}
+        addCredit={this.addCredit}
+      />
+    );
+    const DebitsComponent = () => (
+      <Debits
+        debits={this.state.debitList}
+        accountBalance={this.state.accountBalance}
+        updateAccountBalance={this.updateAccountBalance}
+        addDebit={this.addDebit}
+      />
+    );
 
     // Important: Include the "basename" in Router, which is needed for deploying the React app to GitHub Pages
     return (
       <Router basename="/bank-of-react-example-code-gh-pages">
         <div>
-          <Route exact path="/" render={HomeComponent}/>
-          <Route exact path="/userProfile" render={UserProfileComponent}/>
-          <Route exact path="/login" render={LogInComponent}/>
-          <Route exact path="/credits" render={CreditsComponent}/>
-          <Route exact path="/debits" render={DebitsComponent}/>
+          <Route exact path="/" render={HomeComponent} />
+          <Route exact path="/userProfile" render={UserProfileComponent} />
+          <Route exact path="/login" render={LogInComponent} />
+          <Route exact path="/credits" render={CreditsComponent} />
+          <Route exact path="/debits" render={DebitsComponent} />
         </div>
       </Router>
     );
