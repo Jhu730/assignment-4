@@ -1,8 +1,8 @@
-# bank-of-react-example-code-gh-pages
-This repository is the starter code for Assignment 4 - Bank of React.
+WEBDEV Project 4:Bank Of React
+Group: Jason Hu , David Chen
 
 ### Live Link 
-[Website link](https://johnnylaicode.github.io/bank-of-react-example-code-gh-pages/)
+[Our Website link](https://jhu730.github.io/assignment-4/)
 
 ----------
 ### 1. Use the following process to ***import*** the Assignment 4 starter code repository to your GitHub account as your starter codebase
