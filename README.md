@@ -1,6 +1,6 @@
-#WEBDEV Project 4:Bank Of React
+WEBDEV Project 4:Bank Of React
 
-#Group: Jason Hu , David Chen
+Group: Jason Hu , David Chen
 
 ### Live Link 
 [Our Website link](https://jhu730.github.io/assignment-4/)
