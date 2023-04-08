@@ -72,8 +72,8 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.apiCallDebit();
     this.apiCallCredit();
+    this.apiCallDebit();
   }
 
   updateAccountBalance = (newBalance) => {
